@@ -1,0 +1,21 @@
+{
+  "name": "bubbles",
+  "version": "1.0.0",
+  "description": "Describe bubbles here",
+  "private": true,
+  "scripts": {
+    "build": "nwb build",
+    "clean": "nwb clean",
+    "start": "nwb serve --reload",
+    "test": "nwb test",
+    "test:watch": "nwb test --server"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "nwb": "0.9.x"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": ""
+}
