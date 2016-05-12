@@ -42,6 +42,7 @@ export default function arcSet({
     let selector = container.selectAll('.arc').data(d => {
       return d
     });
+    selector.exit().remove();
     let enter = selector.enter()
       .append('g').attr('class', 'arc')
 
