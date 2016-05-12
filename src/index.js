@@ -107,36 +107,25 @@ function joinBox({value, top, width=165, border=16, height}) {
       .attr('dy', '1em')
       .style({opacity: 0.8})
 
-    let format = d3.format(",.2f");
-    selector.select('.amount').text(d => '£' + d + 'bn');
+    let format = d3.format(",.2r");
+    selector.select('.amount').text(d => '£' + format(d) + 'bn');
   };
 }
 
-function init() {
-  const WIDTH = 1300, HEIGHT = 1600*2;
-
-  let data = [
-    {type: 'income', label: 'Individuals', value: 18.8},
-    {type: 'income', label: 'Goverment Sources', value: 13.3},
-    {type: 'income', label: 'Voluntary Sector', value: 3.3},
-    {type: 'income', label: 'Investments', value: 2.9},
-    {type: 'income', label: 'Private Sector', value: 1.7},
-    {type: 'income', label: 'National Lotter', value: 0.5},
-
-
-    {type: 'reinvest', value: 15},
-    {type: 'reinvest', value: 5},
-
-    {type: 'outgoing', label: 'Goverment Sources', value: 1.2},
-    {type: 'outgoing', label: 'Charitable activitites', value: 29.9},
-    {type: 'outgoing', label: 'Voluntary sector', value: 0.7},
-
-  ];
+function init(data) {
+  const WIDTH = 1300, HEIGHT = 1700;
   data.reverse()
-  data = _.groupBy(data, 'type');
+  data = _.groupBy(data, 'Type');
+  data = _.mapObject(data, (lines, type) => {
+    return _.map(_.groupBy(lines, 'Source'), (sourceLines, source) => {
+      return {label: source, value: d3.sum(sourceLines, d => parseFloat(d["Total"]))/1000, type};
+    });
+  });
+
   _.map(data, list => list.forEach((d,i) => {
     d.ring = i;
   }));
+
   let sums = _.mapObject(data, d => d3.sum(d, d => d.value));
   let lengths = _.mapObject(data, d => d.length);
 
@@ -145,6 +134,7 @@ function init() {
   let dotColor = d3.scale.linear().domain([0, lengths.income]).range(['#BDB5D6', '#9B83B0']);
 
 
+  let highlighted = null;
 
   const TOP_INNER_RADIUS = 227;
   const ARC_WIDTH = 44;
@@ -155,7 +145,15 @@ function init() {
 
   let arcDefaults = {
     ring: d => d.ring,
-    progress: (d,i) => d.value/sums[d.type],
+    progress: (d,i) => {
+      return d.value/sums[d.type]
+    },
+    mouseover: (d,i) => highlight(d),
+    mouseout: (d,i) => highlight(null),
+    click: (d,i) => highlight(d),
+    opacity: (d,i) => {
+      return (highlighted == null || highlighted === d) ? 1 : 0.6
+    },
   };
 
   let incomeArcs = arcIndicators({
@@ -233,19 +231,29 @@ function init() {
     .attr('width', WIDTH)
     .attr('height', HEIGHT)
     .append('g')
-    .attr('transform', `translate(${WIDTH/2}, ${HEIGHT/2})`)
+    .attr('transform', `translate(${WIDTH/2}, 520)`)
     .datum(data);
 
-  container.append('g').call(incomeArcs);
-  container.append('g').call(outgoingArcs);
-  container.append('g').call(reinvestArcs);
-  container.append('g').call(info);
-  container.append('g').call(output);
-  container.append('g').call(arrows);
-  container.append('g').call(join);
-  container.append('g').data([data.reinvest]).call(reinvestmentDots);
-  container.append('g').data([data.outgoing]).call(outgoingDots);
+  let containers= _.object(["income", "outgoing", "reinvest", "info", "output", "arrows", "join", "redots", "outdots"].map(n => [n, container.append('g')]));
 
+  function highlight(d) {
+    highlighted = d;
+    update();
+  }
+
+  function update() {
+    containers.income.call(incomeArcs);
+    containers.outgoing.call(outgoingArcs);
+    containers.reinvest.call(reinvestArcs);
+    containers.info.call(info);
+    containers.output.call(output);
+    containers.arrows.call(arrows);
+    containers.join.call(join);
+    containers.redots.data([data.reinvest]).call(reinvestmentDots);
+    containers.outdots.data([data.outgoing]).call(outgoingDots);
+  }
+
+  update();
 }
 
-init();
+d3.csv("data.csv", init);

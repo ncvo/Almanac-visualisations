@@ -31,11 +31,11 @@ export default function infoItems({lineHeight, left=-140, bottom=0, fontSize=13}
       .attr('dy', '-0.5em')
       .text(d => d.label);
 
-    let format = d3.format(",.2f");
+    let format = d3.format(",.2r");
     items.select('.amount')
       .attr('dx', left)
       .attr('dy', '+0.5em')
       .attr('font-weight', 'bold')
-      .text(d => '£' + d.value + 'bn');
+      .text(d => '£' + format(d.value) + 'bn');
   }
 }

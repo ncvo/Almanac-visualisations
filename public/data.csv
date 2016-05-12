@@ -1,0 +1,22 @@
+Source,Sub-Source,Type,Micro,Small,Medium,Large,Major,Super-major,Total
+Individuals,Donations,income,18.90,452.90,1167.60,1870.60,2265.00,1439.00,7214.00
+Individuals,Legacies,income,3.30,29.40,193.50,464.50,663.20,811.60,2165.50
+Individuals,Fees for services,income,62.60,345.70,1049.30,2072.90,2011.90,439.60,5981.90
+Individuals,Fundraising,income,72.00,245.90,520.60,1269.00,1015.10,872.70,3995.40
+Private sector,Donations,income,0.00,23.20,118.90,293.90,298.10,283.00,1017.20
+Private sector,Earned,income,1.40,24.30,138.90,275.00,321.60,301.00,1062.20
+National lottery,,income,0.70,22.30,176.70,188.20,81.70,19.00,488.70
+Government sources,Grants,income,11.20,78.80,548.30,921.40,797.50,468.20,2825.50
+Government sources,Contracts and fees,income,6.60,291.10,1525.80,3583.60,5005.20,1764.20,12176.50
+Voluntary sector,Grants,income,3.20,83.00,532.80,726.00,654.00,882.20,2881.20
+Voluntary sector,Earned,income,3.50,58.50,137.50,267.60,200.60,246.40,914.10
+Investments,,income,41.40,252.80,658.50,918.20,657.40,511.10,3039.40
+Governance,,outgoing,15.90,127.00,315.00,239.90,154.00,38.50,890.30
+Charitable activities,,outgoing,222.60,1415.90,5042.80,8935.30,9342.80,5107.90,30067.30
+Grants,Voluntary sector,reinvest,115.90,222.20,559.50,797.70,582.70,544.70,2822.80
+Grants,Other institutions,outgoing,0.10,3.10,6.70,21.10,8.90,8.30,48.30
+Grants,Individuals,outgoing,13.20,10.20,23.50,20.30,72.00,67.30,206.40
+Grants,Government bodies and universities,outgoing,13.80,26.50,119.70,307.20,929.90,869.20,2266.30
+Generating funds,Fundraising and publicity,reinvest,10.60,128.40,423.00,1313.30,1223.00,800.10,3898.40
+Generating funds,Costs of generating voluntary income,reinvest,0.00,23.20,108.50,226.10,298.40,455.60,1111.80
+Generating funds,Investment management,reinvest,8.90,24.90,72.90,109.80,46.50,140.30,403.20

@@ -26,6 +26,10 @@ export default function arcSet({
   tipRadius=(d,i) => 20,
   fill=(d,i) => 'red',
   animateIn=(d,i) => false,
+  mouseover,
+  mouseout,
+  click,
+  opacity=d => 1,
 }={}) {
 
   // let arc = arcIndictator({
@@ -47,7 +51,14 @@ export default function arcSet({
       .append('g').attr('class', 'arc')
 
     // enter.append('defs').append('marker',
-    enter.append('g').attr('class', 'arc-outer').append('g').attr('class', 'arc-inner').append('path');
+    enter.append('g').attr('class', 'arc-outer')
+      .append('g').attr('class', 'arc-inner')
+        .attr('transform', (d,i) => {
+          let [x,y] = center(d,i);
+          let startAngle = animateIn(d,i) ? -180 : angle(d,i);
+          return `translate(${x}, ${y}) rotate(${startAngle})`;
+        })
+      .append('path');
 
     enter.append("clipPath")
       .attr("id", (d,i) => `arc-clip-${id}-${i}`)
@@ -69,38 +80,38 @@ export default function arcSet({
         if (!clockwise(d,i)) {
           t += `scale(1, -1) `;
         }
-        console.log(t);
         return t;
       })
       .attr("clip-path", (d,i) => `url(#arc-clip-${id}-${i})`);
 
-    selector.select('g.arc-inner')
-      .attr('transform', (d,i) => {
-        let [x,y] = center(d,i);
-        let startAngle = animateIn(d,i) ? -180 : angle(d,i);
-        return `translate(${x}, ${y}) rotate(${startAngle})`;
-      });
+    selector.select('.arc-outer')
+      .transition()
+      .duration(300)
+      .style('opacity', opacity);
 
 
     selector.select('g.arc-inner')
       .transition()
       .duration(function (d,i) {
         let currentTransform = this.getAttribute('transform');
-        console.log(currentTransform);
         let [,rotate] = /rotate\((.+)\)/.exec(currentTransform);
         rotate = parseFloat(rotate);
         rotate = -rotate + angle(d,i);
         return ((rotate)/180)*1000;
       })
       .attr('transform', (d,i) => {
+        console.log('trans');
         let [x,y] = center(d,i);
         return `translate(${x}, ${y}) rotate(${angle(d,i)})`;
       });
 
+
     selector.select('path')
+      .on('mouseover', mouseover)
+      .on('mouseout', mouseout)
+      .on('click', click)
       .attr('stroke-width', arcWidth+1)
       .attr('fill', (d,i) => {
-        console.log(fill(d,i));
         return fill(d,i);
       })
       .attr('stroke', 'none')
