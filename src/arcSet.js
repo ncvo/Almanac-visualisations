@@ -58,7 +58,10 @@ export default function arcSet({
           let startAngle = animateIn(d,i) ? -180 : angle(d,i);
           return `translate(${x}, ${y}) rotate(${startAngle})`;
         })
-      .append('path');
+      .append('path')
+      .attr('fill', (d,i) => {
+        return fill(d,i);
+      });
 
     enter.append("clipPath")
       .attr("id", (d,i) => `arc-clip-${id}-${i}`)
@@ -111,9 +114,6 @@ export default function arcSet({
       .on('mouseout', mouseout)
       .on('click', click)
       .attr('stroke-width', arcWidth+1)
-      .attr('fill', (d,i) => {
-        return fill(d,i);
-      })
       .attr('stroke', 'none')
       .attr('d',  (d,i) => {
         let r = innerRadius(d,i) + ring(d,i) * arcWidth;
@@ -132,6 +132,11 @@ export default function arcSet({
           A ${r+arcWidth} ${r+arcWidth} 0 0 0 ${outerSx} ${outerSy}
           Z
         `;
+      })
+      .transition()
+      .duration(300)
+      .attr('fill', (d,i) => {
+        return fill(d,i);
       })
 
   }

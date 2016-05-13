@@ -156,13 +156,24 @@ function init(data) {
     },
   };
 
+  // Highlight color
+  function hc(scale, nonHighlightColor) {
+    return (d,i) => {
+      if (d === highlighted) {
+        return scale(1);
+      } else {
+        return scale(nonHighlightColor(d,i));
+      }
+    };
+  }
+
   let incomeArcs = arcIndicators({
     ...arcDefaults,
     innerRadius: d => TOP_INNER_RADIUS,
     arcWidth: ARC_WIDTH,
     values: d => d["income"],
-    bgFill: (d,i) => bgColor(i/(lengths.income-1)),
-    fgFill: (d,i) => fgColor(i/(lengths.income-1)),
+    bgFill: hc(bgColor, (d,i) => i/(lengths.income-1)),
+    fgFill: hc(fgColor, (d,i) => i/(lengths.income-1)),
   });
 
   let reinvestArcs = arcIndicators({
@@ -171,8 +182,8 @@ function init(data) {
     innerRadius: d => TOP_INNER_RADIUS,
     arcWidth: ARC_WIDTH,
     values: d => d["reinvest"],
-    bgFill: (d,i) => bgColor(i/(lengths.income-1)),
-    fgFill: (d,i) => fgColor((lengths.reinvest-i-1)/(lengths.income-1)),
+    bgFill: hc(bgColor, (d,i) => i/(lengths.income-1)),
+    fgFill: hc(fgColor, (d,i) => (lengths.reinvest-i-1)/(lengths.income-1)),
   });
 
   let outgoingArcs = arcIndicators({
@@ -183,8 +194,8 @@ function init(data) {
     arcWidth: ARC_WIDTH_BOTTOM,
     center: d => [OFFSET_BOTTOM, TOP_INNER_RADIUS + BOTTOM_INNER_RADIUS + ARC_WIDTH * (lengths.income)],
     values: d => d["outgoing"],
-    bgFill: (d,i) => bgColor((lengths.outgoing-i-1)/(lengths.outgoing-1)),
-    fgFill: (d,i) => fgColor(i/(lengths.outgoing-1)),
+    bgFill: hc(bgColor, (d,i) => (lengths.outgoing-i-1)/(lengths.outgoing-1)),
+    fgFill: hc(fgColor, (d,i) => i/(lengths.outgoing-1)),
   });
 
   let info = infoBox({
