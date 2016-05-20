@@ -1,14 +1,10 @@
-let app = document.querySelector('#app')
-
-
-app.innerHTML = '<h2>Welcome to moneyflow</h2>'
-
 import d3 from 'd3';
 import _ from 'underscore';
 import arcSet from './arcSet';
 import infoBox from './infoBox';
 import infoItems from './infoItems';
 import startDots from './startDots';
+import detailsList from './detailsList';
 
 function arcIndicators({bgFill, fgFill, values, ...options}) {
   let bgArcs = arcSet({
@@ -46,8 +42,10 @@ function outputInfo({values, top, left, lineHeight, arrowFill}) {
   // infoItems grows from the bottom, but we can give a negative
   // lineHeight to have it grow from the top
   let info = infoItems({bottom: top, lineHeight: -lineHeight, left: 125, fontSize: 16});
+  let details = detailsList({top: top, lineHeight: lineHeight / 2, fontSize: 12, left: 360});
 
-  return function update(container) {
+  let lastHighlighted;
+  return function update(container, highlighted) {
     let selector = container.selectAll('.outputInfo').data((d,i) => {
       return [values(d,i)];
     });
@@ -55,10 +53,19 @@ function outputInfo({values, top, left, lineHeight, arrowFill}) {
 
     selector.exit().remove();
     let enter = selector.enter().append('g').attr('class', 'outputInfo')
+    enter.append('g').attr('class', 'details');
 
     selector.attr('transform', `translate(${left}, 0)`);
 
-    selector.call(info);
+    selector.call(info, highlighted);
+
+    selector.select('.details')
+      .attr('transform', `translate(0, ${lineHeight * (highlighted || lastHighlighted || {ring: 0}).ring})`)
+      .data((d,i) => (highlighted || lastHighlighted) ? [[highlighted || lastHighlighted]] : [], d => 1)
+      .call(details)
+      .style('opacity', (highlighted && highlighted.breakdown.length > 1) ? 1 : 0);
+
+    lastHighlighted = highlighted
   };
 }
 
@@ -103,31 +110,111 @@ function joinBox({value, top, width=165, border=16, height}) {
     enter.append('text')
       .attr('class', 'amount')
       .attr({'text-anchor': 'middle', 'font-size': 36, 'font-family': 'sans-serif', fill: 'white', 'font-weight': 'bold'})
-      .attr('y', top + height/2 + 50)
+      .attr('y', top + height/2 + 70)
       .attr('dy', '1em')
       .style({opacity: 0.8})
+
+    let iconHeight = 100
+    enter.append('image')
+      .attr('x', -iconHeight/2)
+      .attr('y', top + height/2 - 100)
+      .attr('width', iconHeight)
+      .attr('height', iconHeight)
+      .attr('xlink:href', "icons/income.svg");
 
     let format = d3.format(",.2r");
     selector.select('.amount').text(d => '£' + format(d) + 'bn');
   };
 }
 
-function init(data) {
-  const WIDTH = 1300, HEIGHT = 1700;
-  data.reverse()
-  data = _.groupBy(data, 'Type');
-  data = _.mapObject(data, (lines, type) => {
-    return _.map(_.groupBy(lines, 'Source'), (sourceLines, source) => {
-      return {label: source, value: d3.sum(sourceLines, d => parseFloat(d["Total"]))/1000, type};
-    });
+function regionSelect(container, regions, onChange) {
+  let width = 320;
+  let height = 44;
+  let selector = container.append('g')
+    .attr('transform', 'translate(180, 31)');
+
+  regions = ["Nationally"].concat(regions);
+  let current = 0;
+
+  selector.append('rect').attr({
+    x: -width/2,
+    y: -height/44,
+    width,
+    height,
+    fill: '#522977',
   });
 
-  _.map(data, list => list.forEach((d,i) => {
-    d.ring = i;
-  }));
 
-  let sums = _.mapObject(data, d => d3.sum(d, d => d.value));
-  let lengths = _.mapObject(data, d => d.length);
+  selector.append('text')
+    .text("\u25C0")
+    .attr({
+      'font-size': 20,
+      fill: 'white',
+      y: 28,
+      x: -width/2 + 10,
+    });
+
+  selector.append('text')
+    .text("\u25B6")
+    .attr({
+      'font-size': 20,
+      fill: 'white',
+      y: 28,
+      x: width/2 - 30,
+    });
+
+  let left = selector.append('rect')
+    .attr({
+      x: -width/2,
+      y: -height/44,
+      width: width/2,
+      height,
+      fill: 'transparent',
+    })
+    .on('click', () => {
+      current = (current === 0) ? regions.length - 1 : current - 1;
+      selector.select('.label')
+        .text(regions[current]);
+      onChange(regions[current]);
+    });
+
+
+  let right = selector.append('rect').attr({
+    x: 0,
+    y: -height/44,
+    width: width/2,
+    height,
+    fill: 'transparent',
+  })
+  .on('click', () => {
+    current = (current + 1) % regions.length;
+    selector.select('.label')
+      .text(regions[current]);
+    onChange(regions[current]);
+  })
+
+  selector.append('text')
+    .attr('class', 'label')
+    .text(regions[current])
+    .attr({
+      fill: 'white',
+      y: 28,
+      'font-weight': 100,
+      'text-anchor': 'middle',
+      'font-family': 'sans-serif',
+      'font-size': 20
+    });
+
+  selector.selectAll('text').style('pointer-events', 'none');
+
+}
+
+function init(nationalData, regionalData) {
+  const WIDTH = 1300, HEIGHT = 1500;
+
+  let data = nationalData;
+
+  let lengths = _.mapObject(nationalData, d => d.length);
 
   let bgColor = d3.scale.linear().domain([0, 1]).range(['#DDDBC6', '#A7AF5B']);
   let fgColor = d3.scale.linear().domain([0, 1]).range(['#8E7FB8', '#522977']);
@@ -146,7 +233,8 @@ function init(data) {
   let arcDefaults = {
     ring: d => d.ring,
     progress: (d,i) => {
-      return d.value/sums[d.type]
+      console.log(d.value, d3.sum(data[d.type], dd => dd.value), data);
+      return d.value/d3.sum(data[d.type], dd => dd.value);
     },
     mouseover: (d,i) => highlight(d),
     mouseout: (d,i) => highlight(null),
@@ -181,6 +269,7 @@ function init(data) {
     right: d => false,
     innerRadius: d => TOP_INNER_RADIUS,
     arcWidth: ARC_WIDTH,
+    // animationDelay: 800,
     values: d => d["reinvest"],
     bgFill: hc(bgColor, (d,i) => i/(lengths.income-1)),
     fgFill: hc(fgColor, (d,i) => (lengths.reinvest-i-1)/(lengths.income-1)),
@@ -188,6 +277,7 @@ function init(data) {
 
   let outgoingArcs = arcIndicators({
     ...arcDefaults,
+    // animationDelay: 1000,
     right: d=> false,
     clockwise: d => false,
     innerRadius: d => BOTTOM_INNER_RADIUS,
@@ -200,6 +290,7 @@ function init(data) {
 
   let info = infoBox({
     bottom: -TOP_INNER_RADIUS,
+    top: -TOP_INNER_RADIUS - ARC_WIDTH * lengths.income,
     width: INFO_WIDTH,
     lineHeight: ARC_WIDTH,
     borderColor: '#522977',
@@ -219,7 +310,7 @@ function init(data) {
   let arrows = arrowHeads(outputOptions);
 
   let join = joinBox({
-    value: d => sums.income,
+    value: d => d3.sum(data.income, dd => dd.value),
     top: TOP_INNER_RADIUS - ARC_WIDTH,
     height: ARC_WIDTH * (lengths.income+1.5),
   });
@@ -238,33 +329,114 @@ function init(data) {
     left: -95
   });
 
-  let container = d3.select('#app').append('svg')
+  let svg = d3.select('#app').append('svg')
+  let container = svg
     .attr('width', WIDTH)
     .attr('height', HEIGHT)
     .append('g')
-    .attr('transform', `translate(${WIDTH/2}, 520)`)
-    .datum(data);
+    .attr('transform', `translate(600, 520) scale(0.001)`)
+
+  container
+    .transition()
+    .duration(1500)
+    .ease('quad')
+    .attr('transform', `translate(600, 520) scale(1)`)
+
+  regionSelect(
+    svg,
+    _.sortBy(_.keys(regionalData), _.identity),
+    region => {
+      data = (region === "Nationally") ? nationalData : regionalData[region];
+      update();
+    }
+  );
 
   let containers= _.object(["income", "outgoing", "reinvest", "info", "output", "arrows", "join", "redots", "outdots"].map(n => [n, container.append('g')]));
 
   function highlight(d) {
+    if (d === highlighted) d = null;
     highlighted = d;
-    update();
+    if (highlighted == null) {
+      // We might be setting another highlight almost right away so
+      // lets not be hasty with the transitions
+      setTimeout(update);
+    } else {
+      update();
+    }
   }
 
   function update() {
-    containers.income.call(incomeArcs);
-    containers.outgoing.call(outgoingArcs);
-    containers.reinvest.call(reinvestArcs);
-    containers.info.call(info);
-    containers.output.call(output);
-    containers.arrows.call(arrows);
-    containers.join.call(join);
-    containers.redots.data([data.reinvest]).call(reinvestmentDots);
-    containers.outdots.data([data.outgoing]).call(outgoingDots);
+    containers.income                        .datum(data).call(incomeArcs);
+    containers.outgoing                      .datum(data).call(outgoingArcs);
+    containers.reinvest                      .datum(data).call(reinvestArcs);
+    containers.info                          .datum(data).call(info, (highlighted && highlighted.type !== 'outgoing') ? highlighted : null);
+    containers.output                        .datum(data).call(output, (highlighted && highlighted.type === 'outgoing') ? highlighted : null);
+    containers.arrows                        .datum(data).call(arrows);
+    containers.join                          .datum(data).call(join);
+    containers.redots.data([data.reinvest])  .call(reinvestmentDots);
+    containers.outdots.data([data.outgoing]) .call(outgoingDots);
   }
 
   update();
 }
 
-d3.csv("data.csv", init);
+function prepNational(data) {
+  data.reverse()
+  data = _.groupBy(data, 'Type');
+  data = _.mapObject(data, (lines, type) => {
+    return _.map(_.groupBy(lines, 'Source'), (sourceLines, source) => {
+      return {
+        label: source,
+        value: d3.sum(sourceLines, d => parseFloat(d["Total"]))/1000,
+        type,
+        icon: 'icons/' + source.toLowerCase().replace(/ /, '-') + '.svg',
+        breakdown: sourceLines.map(d => ({
+          label: d['Sub-Source'],
+          value: parseFloat(d["Total"])/1000,
+        }))
+      };
+    });
+  });
+
+  _.map(data, list => list.forEach((d,i) => {
+    d.ring = i;
+  }));
+  return data;
+}
+
+function prepRegional(data) {
+  data.reverse()
+  let regions = _.without(_.keys(data[0]), "Type", "Source");
+  return _.object(regions.map(r => {
+    let regionData = _.mapObject(_.groupBy(data, 'Type'), (lines, type) => {
+      return lines.map(line => ({
+        label: line["Source"],
+        value: parseFloat(line[r])/1000,
+        icon: 'icons/' + line["Source"].toLowerCase().replace(/ /, '-') + '.svg',
+        type,
+        breakdown: [],
+      }));
+    });
+
+    _.map(regionData, list => list.forEach((d,i) => {
+      d.ring = i;
+    }));
+    return [r, regionData];
+  }));
+}
+
+function loadData() {
+  let national, regional;
+  let done = _.after(2, () => init(prepNational(national), prepRegional(regional)));
+  d3.csv("national.csv", d => {
+    national = d;
+    done();
+  });
+
+  d3.csv("regions.csv", d => {
+    regional = d;
+    done();
+  });
+}
+
+loadData();

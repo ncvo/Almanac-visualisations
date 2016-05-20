@@ -3,12 +3,18 @@ import d3 from 'd3';
 import _ from 'underscore';
 import infoItems from './infoItems';
 import startDots from './startDots';
+import detailsList from './detailsList';
 
-export default function infoBox({width, bottom, lineHeight, values, borderColor, dotFill}) {
-  let info = infoItems({bottom, lineHeight});
+
+export default function infoBox({width, bottom, top, lineHeight, values, borderColor, dotFill}) {
+  let info = infoItems({bottom, lineHeight, left: -212});
+  let detailsHeading = infoItems({top, lineHeight, fontSize: 15});
+  let details = detailsList({top: top + lineHeight, lineHeight: lineHeight / 2, fontSize: 12, left: -212});
   let dots = startDots({dotFill, bottom, lineHeight});
 
-  return function update(container) {
+  let lastHighlighted;
+
+  return function update(container, highlighted) {
     let selector = container.selectAll('.infoBox').data((d,i) => {
       return [values(d,i)];
     });
@@ -17,6 +23,8 @@ export default function infoBox({width, bottom, lineHeight, values, borderColor,
     let enter = selector.enter().append('g').attr('class', 'infoBox')
     enter.append('rect');
     enter.append('line');
+    enter.append('g').attr('class', 'list');
+    let detailsEnter = enter.append('g').attr('class', 'details');
 
 
     selector.select('rect')
@@ -34,8 +42,24 @@ export default function infoBox({width, bottom, lineHeight, values, borderColor,
       .attr('stroke-width', '16')
       .attr('stroke', borderColor);
 
+    selector.select('.list')
+      .call(info)
+      .transition()
+      .duration(400)
+      .delay(highlighted ? 0 : 200)
+      .style('opacity', (highlighted == null) ? 1 : 0);
 
-    selector.call(info);
+    selector.select('.details')
+      .data((d,i) => (highlighted || lastHighlighted) ?[[highlighted || lastHighlighted]] : [], d => 1)
+      .call(detailsHeading)
+      .call(details)
+      .transition()
+      .duration(400)
+      .delay(highlighted ? 200 : 0)
+      .style('opacity', (highlighted == null) ? 0 : 1);
+
     selector.call(dots);
+
+    lastHighlighted = highlighted;
   };
 }

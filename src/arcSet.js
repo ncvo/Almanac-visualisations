@@ -30,6 +30,7 @@ export default function arcSet({
   mouseout,
   click,
   opacity=d => 1,
+  animationDelay=0,
 }={}) {
 
   // let arc = arcIndictator({
@@ -40,8 +41,12 @@ export default function arcSet({
 
   let id = _.uniqueId();
 
+  let first = true;
+
   function update(container) {
-    let angle = (d,i) => (1-progress(d,i)) * -180
+    let angle = (d,i) => {
+      return (1-progress(d,i)) * -180;
+    };
 
     let selector = container.selectAll('.arc').data(d => {
       return d
@@ -95,15 +100,16 @@ export default function arcSet({
 
     selector.select('g.arc-inner')
       .transition()
+      .delay((first ? 1500 : 0) + animationDelay)
       .duration(function (d,i) {
-        let currentTransform = this.getAttribute('transform');
-        let [,rotate] = /rotate\((.+)\)/.exec(currentTransform);
-        rotate = parseFloat(rotate);
-        rotate = -rotate + angle(d,i);
-        return ((rotate)/180)*1000;
+        return 600;
+        // let currentTransform = this.getAttribute('transform');
+        // let [,rotate] = /rotate\((.+)\)/.exec(currentTransform);
+        // rotate = parseFloat(rotate);
+        // rotate = -rotate + angle(d,i);
+        // return ((rotate)/180)*1000;
       })
       .attr('transform', (d,i) => {
-        console.log('trans');
         let [x,y] = center(d,i);
         return `translate(${x}, ${y}) rotate(${angle(d,i)})`;
       });
@@ -139,6 +145,7 @@ export default function arcSet({
         return fill(d,i);
       })
 
+    first = false;
   }
 
   return update;
