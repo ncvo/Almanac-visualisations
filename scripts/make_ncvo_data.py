@@ -19,8 +19,11 @@ grouped = df.groupby(["subSector", "strata"])
 aggregated = grouped.agg({
         "income": np.sum,
         "expend": np.sum,
+        "regno": "count",
     }).reset_index()
 aggregated.index.name = "id"
+
+aggregated = aggregated.rename(columns={"regno": "count"})
 
 aggregated.to_csv(OUTPUT_DIR + "sub-sector-strata.csv")
 

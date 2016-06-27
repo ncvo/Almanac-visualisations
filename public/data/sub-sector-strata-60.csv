@@ -69,8 +69,8 @@
 4392,Ada Mary Best's Homes,8887.0,9975.0
 8594,Francis Joseph Mills,8884.0,2230.0
 14170,Leslie K Osmond Memorial Bungalows,8873.0,6614.0
-50465,Captain Richard William Corbett Charitable Trust,8872.0,940.0
 13452,Stow-on-the-Wold Almshouse Charity,8872.0,15660.0
+50465,Captain Richard William Corbett Charitable Trust,8872.0,940.0
 11500,Ellis Evans Charity,8871.0,2265.0
 90,Eaton Bray Reading Room and Coffee Tavern,8839.0,5549.0
 1404,South Newton Peace Memorial Bungalows Charity,8838.0,9153.0
@@ -105,8 +105,8 @@
 3340,The Maharajah's Well,8378.0,10110.0
 57726,The Clifton House Charitable Trust,8366.0,6664.0
 101811,Karen Action Group,8364.0,8790.0
-123594,High Peak Mayoral Charity Committee (Buxton District),8360.0,8105.0
 12429,Knighton Almshouses Trust,8360.0,1541.0
+123594,High Peak Mayoral Charity Committee (Buxton District),8360.0,8105.0
 1383,The Duke of Cornwall's Light Infantry Cottage Homes,8333.0,4210.0
 11183,The Berry Housing Trust,8330.0,3522.0
 110410,The Millennium Group (TMG) Foundation,8327.0,7334.0
@@ -513,9 +513,9 @@
 86604,Chernobyl Continuity,2439.0,17774.0
 11150,Lord Crewe's Almshouse Charity,2433.0,637.0
 15031,Miss Alice Maud Johnston - Settlment,2412.0,2910.0
+123186,Living Medicine,2409.0,2063.0
 5728,Nettleton Memorial Cottage,2409.0,499.0
 118021,The Yeovil Young Achievers Trust,2409.0,0.0
-123186,Living Medicine,2409.0,2063.0
 13668,The Friends of Hodgkin House,2387.0,2077.0
 44667,Scott Mortimer Little Beck Trust,2368.0,1894.0
 4133,The Willoughby Almshouses,2360.0,10951.0
@@ -608,8 +608,8 @@
 1296,Sutton Townlands,915.0,595.0
 83182,Montserrat Overseas People's Progressive Alliance,908.0,860.0
 53233,Uttoxeter Meeting House Burial Ground and Trust Proper,901.0,901.0
-125615,Pakistan Welfare Association Southampton,900.0,1700.0
 72892,East-West Children Trust,900.0,0.0
+125615,Pakistan Welfare Association Southampton,900.0,1700.0
 13753,Victoria Almshouse Fund,892.0,1004.0
 10205,The Cogges Welfare Trust,871.0,538.0
 10652,High Street Almshouses,868.0,102.0
@@ -620,9 +620,9 @@
 8525,The W J Guy Memorial Trust,748.0,26282.0
 111952,The Samandruby Charity,735.0,16060.0
 68896,The Kurdish Aid Foundation,730.0,0.0
-81237,Bengali Welfare and Cultural Society (Redbridge),720.0,1590.0
-38811,The Constable's Land,720.0,90.0
 100607,Patch Resource Services,720.0,570.0
+38811,The Constable's Land,720.0,90.0
+81237,Bengali Welfare and Cultural Society (Redbridge),720.0,1590.0
 56639,A D a (Ashfield Developments and Accommodation) Project,717.0,4223.0
 3527,Cranford Combined Charity,696.0,0.0
 14995,Charity of Cranston Waddell for the Aged Poor,693.0,50.0
@@ -644,8 +644,8 @@
 15161,Rosalind Cottage Trust,531.0,500.0
 120869,Powys Species-Habitat Association,523.0,1358.0
 14523,Sarah Tegfan Davies Comforts Fund,522.0,0.0
-77601,Bunyoro Kitara Development Association,500.0,500.0
 111040,The Eglise De La Fraternite Evangelique De Pentacote - Efep UK,500.0,500.0
+77601,Bunyoro Kitara Development Association,500.0,500.0
 4013,The Mary Curzon Charity for Women Workers Commonly Known as the Mary Curzon Housing Trust,497.0,0.0
 89905,Rochester Children's Holidays,496.0,2169.0
 7753,Tissington Almshouses Fund,489.0,438.0
@@ -705,8 +705,8 @@
 110,Richard Hartwell's Almshouse Charity,115.0,6067.0
 104807,Madeley Living History Project,114.0,373.0
 27836,St Thomas's House,108.0,0.0
-37979,"Whitfield House, Glossop, Derbyshire",103.0,0.0
 91109,Sme Charitable Trust,103.0,4272.0
+37979,"Whitfield House, Glossop, Derbyshire",103.0,0.0
 70870,Barfield House Trust,100.0,732.0
 10597,The Charity for the Poor Known as the Almshouses,99.0,35.0
 16398,Madron (War Memorial) Nurses' Home,98.0,376.0
@@ -743,8 +743,8 @@
 83603,Sidmouth Millennium Walkway Group,12.0,21.0
 6855,The Curzon Herrick Institute,11.0,11.0
 93087,True Colours,10.0,0.0
-88640,The GSB Trust,10.0,1750.0
 111434,The Malcolm Barrett Charitable Foundation,10.0,0.0
+88640,The GSB Trust,10.0,1750.0
 3974,The Fuller Almshouses,8.0,9240.0
 65650,Caritas Wokingham,8.0,4100.0
 93255,Northern Housing Consortium Charitable Trust,7.0,0.0
@@ -753,10 +753,10 @@
 11988,Charity of Mary Price,6.0,0.0
 22868,Friends of Projects By the Blind (Wandsworth),6.0,0.0
 110808,Amphibian Conservation Research Trust,6.0,0.0
-21971,Dominica Oversea Nationals Association Aid - Dominica Development Trust,5.0,600.0
-9867,Wise's Gift,5.0,0.0
 28652,The Denise and Harry Marks Charitable Trust,5.0,6873.0
 1099,William Lee's Almshouse Fund,5.0,0.0
+21971,Dominica Oversea Nationals Association Aid - Dominica Development Trust,5.0,600.0
+9867,Wise's Gift,5.0,0.0
 101270,Home From Home Derbyshire,4.0,0.0
 36077,The Saint Pancras Foundation,4.0,299.0
 2746,Miss Nora Jane Allen Bequest,3.0,0.0
