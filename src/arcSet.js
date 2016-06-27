@@ -15,10 +15,31 @@ export function cart2pol(x, y, cx=0, cy=0) {
   return [r, a];
 }
 
+
+function arrowHeads({arcWidth, center, radius, right}) {
+  return function update(container) {
+    let arrowHeads = container.selectAll('.arrowHead').data((d,i) => values(d,i));
+    arrowHeads.exit().remove();
+    arrowHeads.enter().append('path');
+    arrowHeads
+      .attr('class', 'arrowHead')
+      .attr('fill', arrowFill)
+      .attr('d', (d,i) => {
+        return `
+        M ${left} ${top+lineHeight*i-15}
+        L ${left} ${top+lineHeight*(i+1)+15}
+        L ${left+(40*direction)} ${top+lineHeight*(i+0.5)}
+        Z
+        `;
+      });
+  };
+}
+
 export default function arcSet({
   center=d => [0,0],
   innerRadius=d => 227,
   arcWidth=44,
+  endCaps=false,
   clockwise=(d,i) => true,
   right=(d,i) => true,
   progress=(d,i) => 1,
@@ -42,6 +63,10 @@ export default function arcSet({
   let id = _.uniqueId();
 
   let first = true;
+
+  if (endCaps) {
+    let arrows = arrowHeads({center, radius: (d,i) => innerRadius(d,i) + arcWidth * i, right, arcWidth});
+  }
 
   function update(container) {
     let angle = (d,i) => {
@@ -71,6 +96,25 @@ export default function arcSet({
     enter.append("clipPath")
       .attr("id", (d,i) => `arc-clip-${id}-${i}`)
       .append("rect");
+
+
+
+    // enter.append('path').attr('class', 'endCap');
+
+    // selector.select('.endCap')
+    //   .attr('class', 'endCap')
+    //   .attr('fill', 'red')
+    //   .attr('d', (d,i) => {
+    //     return `
+    //     M ${left} ${top+lineHeight*i-15}
+    //     L ${left} ${top+lineHeight*(i+1)+15}
+    //     L ${left+(40*direction)} ${top+lineHeight*(i+0.5)}
+    //     Z
+    //     `;
+    //   });
+
+
+
 
     selector.select('clipPath rect')
       .attr("x", (d,i) => center(d,i)[0])
@@ -119,8 +163,8 @@ export default function arcSet({
       .on('mouseover', mouseover)
       .on('mouseout', mouseout)
       .on('click', click)
-      .attr('stroke-width', arcWidth+1)
-      .attr('stroke', 'none')
+      .attr('stroke-width', 0.3)
+      .attr('stroke', 'white')
       .attr('d',  (d,i) => {
         let r = innerRadius(d,i) + ring(d,i) * arcWidth;
         let [cx,cy] = [0,0];
@@ -130,10 +174,15 @@ export default function arcSet({
         let [outerSx, outerSy] = pol2cart(r+arcWidth+1, Math.PI*1.5, cx, cy);
         let pointerAngle = tipRadius(d,i)/(r+(arcWidth/2));
         let [ex, ey] = pol2cart(r+(arcWidth/2), Math.PI/2+pointerAngle, cx, cy);
+        let [capx1, capy1] = pol2cart(r-(arcWidth/2), Math.PI/2, cx, cy);
+        let [capx2, capy2] = pol2cart(r+(arcWidth*1.5), Math.PI/2, cx, cy);
+
         return `
           M ${innerSx} ${innerSy}
           A ${r} ${r} 0 0 1 ${innerEx} ${innerEy}
+          ${ (endCaps) ? `L ${capx1} ${capy1}` : ''}
           L ${ex} ${ey}
+          ${ (endCaps) ? `L ${capx2} ${capy2}` : ''}
           L ${outerEx} ${outerEy}
           A ${r+arcWidth} ${r+arcWidth} 0 0 0 ${outerSx} ${outerSy}
           Z

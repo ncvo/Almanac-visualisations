@@ -7,8 +7,8 @@ import detailsList from './detailsList';
 
 
 export default function infoBox({width, bottom, top, lineHeight, values, borderColor, dotFill}) {
-  let info = infoItems({bottom, lineHeight, left: -212});
-  let detailsHeading = infoItems({top, lineHeight, fontSize: 15});
+  let info = infoItems({bottom, lineHeight, left: -212, fontSize: 12});
+  let detailsHeading = infoItems({top, lineHeight, fontSize: 14});
   let details = detailsList({top: top + lineHeight, lineHeight: lineHeight / 2, fontSize: 12, left: -212});
   let dots = startDots({dotFill, bottom, lineHeight});
 

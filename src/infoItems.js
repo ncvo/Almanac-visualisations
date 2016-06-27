@@ -2,7 +2,7 @@
 import d3 from 'd3';
 import _ from 'underscore';
 
-export default function infoItems({lineHeight, left=-212, bottom, top, fontSize=13}) {
+export default function infoItems({lineHeight, left=-212, bottom, top, fontSize=13, iconHeight=45}) {
   if (top != null) {
     bottom = top;
     lineHeight = -lineHeight;
@@ -28,7 +28,6 @@ export default function infoItems({lineHeight, left=-212, bottom, top, fontSize=
       .transition()
       .style('opacity', d => (highlighted == null || highlighted === d) ? 1 : 0);
 
-    let iconHeight = 55;
     let iconSpacing = 30;
 
     items.select('image')
