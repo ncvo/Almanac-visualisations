@@ -29,15 +29,15 @@ aggregated.to_csv(OUTPUT_DIR + "sub-sector-strata.csv")
 
 #print aggregated
 
-for i, x in aggregated.iterrows():
-    items = df[(df["strata"] == x["strata"]) & (df["subSector"] == x["subSector"])]
-    items = items[["name", "income", "expend"]]
-    items = items.sort("income", ascending=False)
-    top = items[:1000]
-    rest = items[1000:]
+# for i, x in aggregated.iterrows():
+#     items = df[(df["strata"] == x["strata"]) & (df["subSector"] == x["subSector"])]
+#     items = items[["name", "income", "expend"]]
+#     items = items.sort("income", ascending=False)
+#     top = items[:1000]
+#     rest = items[1000:]
 
 
-    top.to_csv(OUTPUT_DIR + "sub-sector-strata-%s.csv" % (i,))
+#     top.to_csv(OUTPUT_DIR + "sub-sector-strata-%s.csv" % (i,))
 
 # for subSector, items in grouped.groups.items():
 #     print subSector
