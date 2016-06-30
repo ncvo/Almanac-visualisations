@@ -48,7 +48,7 @@ export default function infoItems({lineHeight, left=-212, bottom, top, fontSize=
       .attr('dy', '-0.5em')
       .text(d => d.label);
 
-    let format = d3.format(",.2r");
+    let format = d3.format(",.2f");
     items.select('.amount')
       .attr('dx', left + iconHeight + iconSpacing)
       .attr('dy', '+0.5em')

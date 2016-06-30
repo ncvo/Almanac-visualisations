@@ -22,7 +22,7 @@ function bubble(container, position, bgFill, title, value) {
     .attr('dy', 12)
     .attr({'text-anchor': 'middle', 'font-size': 16, 'font-family': 'sans-serif', fill: 'white'});
 
-  let format = d3.format(",.2r");
+  let format = d3.format(",.1f");
 
   return function update(value) {
     g.select('.value').text('£' + format(value) + 'bn');
@@ -456,6 +456,9 @@ function prepNational(data) {
   data.reverse()
   data = _.groupBy(data, 'Type');
   data = _.mapObject(data, (lines, type) => {
+    if (type === "outgoing") {
+      lines.reverse()
+    }
     return _.map(_.groupBy(lines, 'Source'), (sourceLines, source) => {
       return {
         label: source,
@@ -481,6 +484,9 @@ function prepRegional(data) {
   let regions = _.without(_.keys(data[0]), "Type", "Source");
   return _.object(regions.map(r => {
     let regionData = _.mapObject(_.groupBy(data, 'Type'), (lines, type) => {
+      if (type === "outgoing") {
+        lines.reverse()
+      }
       return lines.map(line => ({
         label: line["Source"],
         value: parseFloat(line[r])/1000,
