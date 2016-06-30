@@ -237,8 +237,9 @@ function gridLabels({data, container, center}) {
       .transition()
       .duration(visible ? 2000 : 0)
       .attr('font-family', 'sans-serif')
-      .attr('fill', '#999')
+      .attr('fill', '#666')
       .attr('font-size', 12)
+      .attr('font-weight', 'bold')
       .attr('transform', d => {
         let c = center(d);
         return `translate(${c.x}, ${c.y})`;
@@ -394,7 +395,7 @@ function loadedData(sectorStrata) {
       'background-color': 'white',
       'border': '1px solid #522574',
       'color': '#522574',
-      'font-size': '10px',
+      'font-size': '14px',
       'font-family': 'sans-serif',
       'padding-top': '5px',
       'padding-bottom': '5px',
@@ -463,7 +464,7 @@ function loadedData(sectorStrata) {
           (inSubSectorView ? {name: 'Income band', value: d.strata} : {name: 'Sub-Sector', value: d.subSector}),
           {name: 'Total income', value: formatMoney(d.income)},
           {name: 'Total spending', value: formatMoney(d.expend)},
-          {name: 'Number of organizations', value: formatCount(d.count)},
+          {name: 'Number of organisations', value: formatCount(d.count)},
         ]);
       })
       .on('mousemove', () => {
