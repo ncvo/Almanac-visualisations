@@ -382,7 +382,7 @@ function init(nationalData, regionalData) {
     left: -20
   });
 
-  let svg = d3.select('#app').append('svg')
+  let svg = d3.select('#moneyflow').append('svg')
   let container = svg
     .attr('width', WIDTH)
     .attr('height', HEIGHT)
@@ -452,7 +452,7 @@ function init(nationalData, regionalData) {
   update();
 }
 
-function prepNational(data) {
+function prepNational(data, config) {
   data.reverse()
   data = _.groupBy(data, 'Type');
   data = _.mapObject(data, (lines, type) => {
@@ -464,7 +464,7 @@ function prepNational(data) {
         label: source,
         value: d3.sum(sourceLines, d => parseFloat(d["Total"]))/1000,
         type,
-        icon: 'icons/' + source.toLowerCase().replace(/ /, '-') + '.svg',
+        icon: config.iconsRoot +  source.toLowerCase().replace(/ /, '-') + '.svg',
         breakdown: sourceLines.map(d => ({
           label: d['Sub-Source'],
           value: parseFloat(d["Total"])/1000,
@@ -479,7 +479,7 @@ function prepNational(data) {
   return data;
 }
 
-function prepRegional(data) {
+function prepRegional(data, config) {
   data.reverse()
   let regions = _.without(_.keys(data[0]), "Type", "Source");
   return _.object(regions.map(r => {
@@ -490,7 +490,7 @@ function prepRegional(data) {
       return lines.map(line => ({
         label: line["Source"],
         value: parseFloat(line[r])/1000,
-        icon: 'icons/' + line["Source"].toLowerCase().replace(/ /, '-') + '.svg',
+        icon: config.iconsRoot + line["Source"].toLowerCase().replace(/ /, '-') + '.svg',
         type,
         breakdown: [],
       }));
@@ -503,18 +503,22 @@ function prepRegional(data) {
   }));
 }
 
-function loadData() {
+function moneyflow(config) {
+  _.defaults(config, {
+    dataRoot: '',
+    iconsRoot: '',
+  });
   let national, regional;
-  let done = _.after(2, () => init(prepNational(national), prepRegional(regional)));
-  d3.csv("national.csv", d => {
+  let done = _.after(2, () => init(prepNational(national, config), prepRegional(regional, config)));
+  d3.csv(config.dataRoot + "national.csv", d => {
     national = d;
     done();
   });
 
-  d3.csv("regions.csv", d => {
+  d3.csv(config.dataRoot + "regions.csv", d => {
     regional = d;
     done();
   });
 }
 
-loadData();
+window.moneyflow = moneyflow;
