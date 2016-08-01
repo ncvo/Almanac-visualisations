@@ -4,6 +4,7 @@
   "description": "Describe bubbles here",
   "private": true,
   "scripts": {
+    "build-data": "python2 scripts/make_ncvo_data.py",
     "build": "nwb build",
     "clean": "nwb clean",
     "start": "nwb serve --reload",

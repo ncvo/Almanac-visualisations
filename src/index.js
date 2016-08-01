@@ -1,7 +1,7 @@
 import d3 from 'd3';
 import _ from 'underscore'
 
-let app = document.querySelector('#app')
+let app = document.querySelector('#bubbles')
 
 
 export function pol2cart(r, a, cx=0, cy=0) {
@@ -255,10 +255,9 @@ function gridLabels({data, container, center}) {
 }
 
 function loadedData(sectorStrata) {
-
   let radius = 300;
   let width = 810, height = 1200;
-  let root = d3.select('#app');
+  let root = d3.select('#bubbles');
   let center = {x: width/2, y: 300};
 
   let subSectorIndex = _.mapObject(_.invert(_.uniq(_.pluck(sectorStrata, 'subSector'))), parseInt);
@@ -484,4 +483,9 @@ function loadedData(sectorStrata) {
   stratas();
 }
 
-d3.csv('data/sub-sector-strata.csv', loadedData);
+
+function bubbles (config) {
+  d3.csv(config.dataRoot + 'sub-sector-strata.csv', loadedData);
+}
+
+window.bubbles = bubbles;
