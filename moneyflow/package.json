@@ -1,0 +1,23 @@
+{
+  "name": "moneyflow",
+  "version": "1.0.0",
+  "description": "Describe moneyflow here",
+  "private": true,
+  "scripts": {
+    "build": "nwb build",
+    "clean": "nwb clean",
+    "start": "nwb serve --reload",
+    "test": "nwb test",
+    "test:watch": "nwb test --server"
+  },
+  "dependencies": {
+    "d3": "^3.5.17",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "nwb": "0.11.x"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": ""
+}
